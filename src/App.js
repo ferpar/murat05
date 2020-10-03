@@ -9,6 +9,10 @@ import {
 } from "d3";
 
 const initialData = [25, 45, 30, 74, 38, 80, 160, 240, 200, 100];
+const dimensions = {
+  height: 300,
+  width: 450
+}
 
 function App() {
   const [data, setData] = useState(initialData)
@@ -18,17 +22,20 @@ function App() {
 
     const xScale = scaleBand()
       .domain(data.map( (val, idx) => idx))
-      .range([0, (data.length - 1)*50])
+      .range([0, dimensions.width])
       .padding(0.5);
 
     const yScale = scaleLinear()
       .domain([0, Math.max(...data)*1.2])
-      .range([300, 0]);
+      .range([dimensions.height, 0]);
 
     const colorScale = scaleLinear()
       .domain([75, 150, 300])
       .range(["green", "orange", "red"])
       .clamp(true);
+
+    svg
+      .style("width", `${dimensions.width}px`);
 
     const xAxis = axisBottom(xScale).ticks(data.length).tickFormat( idx => idx + 1);
     svg
@@ -39,7 +46,7 @@ function App() {
     const yAxis = axisRight(yScale).ticks(5);
     svg
       .select(".y-axis")
-      .style("transform", `translateX(${50*(data.length -1)}px)`)
+      .style("transform", `translateX(${dimensions.width}px)`)
       .call(yAxis);      
 
     svg
@@ -64,6 +71,7 @@ function App() {
     <br/>
     <button onClick={() => setData(data.map( val => val + 25))}>Update Data</button>
     <button onClick={() => setData(data.filter( value => value  < 50))}> Filter Data</button>
+    <button onClick={() => setData([...data, Math.random()*300])}>Add Data</button>
     </React.Fragment>;
 }
 
