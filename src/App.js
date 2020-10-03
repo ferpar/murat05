@@ -57,7 +57,23 @@ function App() {
       .style("transform", "scale(1, -1)")
       .attr("x", (value, index) => xScale(index))
       .attr("y", -300)
+      .attr("index", (value, index) => index)
       .attr("width", xScale.bandwidth())
+      .on("mouseenter", (event, value) => {
+        const index = event.target.attributes.index.value;
+        svg
+          .selectAll(".tooltip")
+          .data([value])
+          .join("text")
+          .attr("class", "tooltip")
+          .text(value)
+          .attr("x", xScale(index) + xScale.bandwidth()/2)
+          .attr("y", yScale(value) - 8)
+          .attr("text-anchor", "middle")
+          .transition()
+          .attr("opacity", 1)
+      })
+      .on("mouseleave", () => svg.select(".tooltip").remove())
       .transition()
       .attr("fill", colorScale)
       .attr("height", value => 300 - yScale(value));
@@ -71,7 +87,7 @@ function App() {
     <br/>
     <button onClick={() => setData(data.map( val => val + 25))}>Update Data</button>
     <button onClick={() => setData(data.filter( value => value  < 50))}> Filter Data</button>
-    <button onClick={() => setData([...data, Math.random()*300])}>Add Data</button>
+    <button onClick={() => setData([...data, Math.round(Math.random()*300)])}>Add Data</button>
     </React.Fragment>;
 }
 
